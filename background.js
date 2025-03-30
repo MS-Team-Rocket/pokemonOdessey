@@ -22,8 +22,15 @@ chrome.runtime.onConnect.addListener(function(port) {
 
         console.log("Send new pokemon request......."); 
 
-        const pokemonId = Math.ceil(Math.random()*101)
-        fetch(`https://pokeapi.co/api/v2/pokemon/${pokemonId}`)
+        // const pokemonId = Math.ceil(Math.random()*91 + 10);
+        const pokemonId = () => {
+          const pool = getAvailablePokemonIds();
+          const index = Math.floor(Math.random() * pool.length);
+          return pool[index];
+        };
+        
+        console.log("Random (safe) Pokémon ID:", pokemonId());
+        fetch(`https://pokeapi.co/api/v2/pokemon/${pokemonId()}`)
         .then(response => response.json())
         .then(json => {
           // setAttributes(json);
@@ -50,3 +57,34 @@ function setAttributes(json){
     currentPokemon.level = Math.ceil(Math.random() * 20);
     currentPokemon.id = json.id;
 };
+
+function getAvailablePokemonIds() {
+  // List of Pokémon IDs to exclude
+  // const excludedIds = [
+  //   // Starter lines
+  //   1, 2, 3,      // Bulbasaur → Venusaur
+  //   4, 5, 6,      // Charmander → Charizard
+  //   7, 8, 9,      // Squirtle → Blastoise
+  //   152,          // Not in Gen 1 but safe check
+
+  //   // Pikachu line
+  //   25, 26,       // Pikachu, Raichu
+
+  //   // Special/Legendary
+  //   144, 145, 146, // Articuno, Zapdos, Moltres
+  //   149, 150, 151,      // Dragonite, Mewtwo, Mew
+
+  //   // Optional exclusions
+  //   172, // Pichu (not in 1st gen but may be referenced)
+
+  const excludedIds = [1,2,3,4,5,6,7,8,9,152,25,26,144,145,146,149,150,151];
+
+  const allIds = [];
+  for (let i = 1; i <= 151; i++) {
+    if (!excludedIds.includes(i)) {
+      allIds.push(i);
+    }
+  }
+
+  return allIds;
+}
