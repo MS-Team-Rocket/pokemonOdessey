@@ -3,8 +3,9 @@ from sqlalchemy.orm import relationship
 from sqlalchemy.sql.schema import ForeignKey
 from sqlalchemy.sql.sqltypes import Integer, String, Boolean
 from db.database import Base
-from sqlalchemy import Column
-
+from sqlalchemy import Column, Table
+# Import the association table
+from .users import user_pokedex  # Use relative import for user_pokedex
 
 class Pokemon(Base):
     __tablename__ = 'pokemons'
@@ -14,6 +15,7 @@ class Pokemon(Base):
     Type1 = Column(String, nullable=False)
     Type2 = Column(String, nullable=True)
     Total = Column(Integer, nullable=False)
+    Picture = Column(Integer, nullable=False)
     HP = Column(Integer, nullable=False)
     Attack = Column(Integer, nullable=False)
     Defense = Column(Integer, nullable=False)
@@ -21,3 +23,4 @@ class Pokemon(Base):
     Sp_Def = Column(Integer, nullable=False)
     Speed = Column(Integer, nullable=False)
     Generation = Column(Integer, nullable=False)
+    users = relationship('DbUser', secondary=user_pokedex, back_populates='pokedex')
