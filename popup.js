@@ -1,3 +1,4 @@
+const port = chrome.runtime.connect({ name: "TEAM_ROCKET" });
 const pokeName = document.getElementById("wild-poke-name")
 const pokeImg = document.getElementById("wild-poke-img");
 const pokeLevel = document.getElementById("wild-poke-level");
@@ -8,12 +9,6 @@ const mainScreen = document.querySelector(".battle-container");
 const teamScreen = document.getElementById("teamScreen");
 var currentPokemon;
 
-
-const port = chrome.runtime.connect({ name: "TEAM_ROCKET" });
-
-
-//delete localStorage for new user testing
-// localStorage.removeItem("pokemonCollection");
 
 port.postMessage({ request: "SEND_INITIAL_POKEMON" });
 
@@ -36,7 +31,6 @@ port.onMessage.addListener((msg) => {
       console.log("NEW POKEMON FOUND !!!");
       console.log(msg.pokemonFound);
       // testDiv.innerHTML += `<p>Pokemon Found</p>`;
-      // setAttributes(msg.pokemonFound);
       currentPokemon = {...msg.pokemonFound};
       console.log("CURRENT POKEMON NOW!!!");
       console.log(currentPokemon);
@@ -114,9 +108,7 @@ catcheMeBtn.addEventListener('click', () => {
     const pokemon = { ...currentPokemon };
     let pokemonCollection = JSON.parse(localStorage.getItem("pokemonCollection")) || [];
     if(pokemonCollection.length < 6){
-        // pokemonCollection.push(pokemon);
         savePokemomLocally(pokemon);
-        // localStorage.setItem('pokemonCollection', JSON.stringify(pokemonCollection));
         // title.innerText = `You caught a ${response.name}`
     } else{
         console.log("Maximum team is 6 pokemons... chose wisel !!");
@@ -160,17 +152,10 @@ document.getElementById("cheatSubmit").addEventListener("click", () => {
   alert(`Cheat activated: ${cheatCode}`);
 
     const specialPokemon = cheatMap[cheatCode];
-
-    const collection = JSON.parse(localStorage.getItem("pokemonCollection")) || [];
-    // collection.push(specialPokemon);
     savePokemomLocally(specialPokemon);
-
-    // localStorage.setItem("pokemonCollection", JSON.stringify(collection));
     alert(`You unlocked ${specialPokemon.name}! 🥳`);
-
     // Clear input
     input.value = "";
-
     starterScreen.style.display = "none";
     mainScreen.style.display = "flex";
   });
@@ -191,7 +176,6 @@ document.getElementById("cheatSubmit").addEventListener("click", () => {
   function savePokemomLocally(pokemon){
     const collection = JSON.parse(localStorage.getItem("pokemonCollection")) || [];
     const newPokemon = {...pokemon};
-
     newPokemon.index = collection.length + 1;
     collection.push(newPokemon);
     localStorage.setItem("pokemonCollection", JSON.stringify(collection));
@@ -210,7 +194,6 @@ function newUser(){
 }
 
 function initCheatCodes() {
-  console.log("INITIATING CHEAT.......................");
     const cheatList = {
         gyarados: {
         id: 130, 
@@ -256,10 +239,3 @@ function initCheatCodes() {
   
     localStorage.setItem("cheatCodes", JSON.stringify(cheatList));
   }
-
-  function setAttributes(json){
-    currentPokemon.name = json.forms[0].name
-    currentPokemon.imageUrl = json.sprites.front_default
-    currentPokemon.level = Math.ceil(Math.random() * 20)
-    currentPokemon.id = json.id
-};
