@@ -210,6 +210,7 @@ function newUser(){
 }
 
 function initCheatCodes() {
+  console.log("INITIATING CHEAT.......................");
     const cheatList = {
         gyarados: {
         id: 130, 
