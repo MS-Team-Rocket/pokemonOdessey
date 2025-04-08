@@ -21,7 +21,6 @@ chrome.runtime.onConnect.addListener(function(port) {
       else if (msg.request === "SEND_POKEMON") {
 
         console.log("Send new pokemon request......."); 
-
         const pokemonId = () => {
           const pool = getAvailablePokemonIds();
           const index = Math.floor(Math.random() * pool.length);
@@ -49,15 +48,8 @@ chrome.runtime.onConnect.addListener(function(port) {
     });
   });
   
-function setAttributes(json){
-    currentPokemon.name = json.forms[0].name;
-    currentPokemon.imageUrl = json.sprites.front_default;
-    currentPokemon.level = Math.ceil(Math.random() * 20);
-    currentPokemon.id = json.id;
-};
 
-function getAvailablePokemonIds() {
-  // List of Pokémon IDs to exclude
+// List of Pokémon IDs to exclude
   // Starter lines
   //   1, 2, 3,      // Bulbasaur → Venusaur
   //   4, 5, 6,      // Charmander → Charizard
@@ -70,9 +62,8 @@ function getAvailablePokemonIds() {
   // Special/Legendary
   //   144, 145, 146, // Articuno, Zapdos, Moltres
   //   149, 150, 151,      // Dragonite, Mewtwo, Mew
-
+function getAvailablePokemonIds() {
   const excludedIds = [1,2,3,4,5,6,7,8,9,152,25,26,144,145,146,149,150,151];
-
   const allIds = [];
   for (let i = 1; i <= 151; i++) {
     if (!excludedIds.includes(i)) {
